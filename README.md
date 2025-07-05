@@ -1,1 +1,8 @@
 # food-and-health
+
+View this project [here](https://uravat.github.io/food-and-health/)
+
+# How do dietary patterns influence health and disease? 
+
+Using data from NNMB survey collected from 2009 - 2012 for nutritional status of rural population,  we seek to examine the relationship between diet and prelevance of lifestyle diseases among adults. Diet patterns impacts health and can pay a major role in life-style diseases like blood-pressue, diabetes and obesity. 
+

@@ -2,4 +2,8 @@
 title: "About"
 ---
 
-About this site
+This project came about due to [my](https://github.com/uravat/) interest in data science and food and health. 
+
+How do dietary patterns influence health and disease? Curious? Check it out [here](How do dietary patterns influence health and disease?) Email me if interested uma.ravat.ucsb@gmail.com
+
+I have created this project website as a part of [Kane’s Data Science Bootcamp](https://bootcamp.davidkane.info/).
