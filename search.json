@@ -4,13 +4,20 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site"
+    "text": "This project came about due to my interest in data science and food and health.\nHow do dietary patterns influence health and disease? Curious? Check it out here Email me if interested uma.ravat.ucsb@gmail.com\nI have created this project website as a part of Kane’s Data Science Bootcamp."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Food and Health",
+    "title": "Influence of Dietary Patterns on Health and Disease",
     "section": "",
-    "text": "How do dietary patterns influence health and disease? Using data from NNMB survey collected from 2009 - 2012 for nutritional status of rural population, we seek to examine the relationship between diet and prelevance of lifestyle diseases among adults. Diet patterns impacts health and can pay a major role in life-style diseases like blood-pressue, diabetes and obesity."
+    "text": "How do dietary patterns influence health and disease? Using data from NNMB survey collected from 2009 - 2012 for nutritional status of rural population, we seek to examine the relationship between diet and prelevance of lifestyle diseases among adults. Diet patterns impact health and can pay a major role in life-style diseases like blood-pressue, diabetes and obesity."
+  },
+  {
+    "objectID": "index.html#will-add-graphic-here",
+    "href": "index.html#will-add-graphic-here",
+    "title": "Influence of Dietary Patterns on Health and Disease",
+    "section": "Will add graphic here",
+    "text": "Will add graphic here"
   }
 ]
