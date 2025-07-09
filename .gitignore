@@ -1,3 +1,8 @@
 /.quarto/
 
 _site
+data
+source*/*
+.DS_Store
+*_cache
+*_files

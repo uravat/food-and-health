@@ -1,7 +1,114 @@
 ---
 title: "Influence of Dietary Patterns on Health and Disease"
+execute:
+  message: false
+  warning: false
+  echo: false
+  cache: true
 ---
+
+```{r}
+```{r}
+library(tidyverse)
+
+# Load data
+diet <- read_csv("./data/DietData.csv")
+participants <- read_csv("./data/ParticipantData.csv")
+
+# Join datasets on 'id'
+full_data <- left_join(diet, participants, by = "id")
+
+
+```
+```{r}
+
+
+# Filter and round BMI
+full_data <- full_data %>%
+  filter(!is.na(bmi_adults), bmi_adults >= 12, bmi_adults <= 40) %>%
+  mutate(bmi_round = floor(bmi_adults))
+
+# Summarize nutrient energy per person and compute percentages
+bmi_macros <- full_data %>%
+  group_by(id, bmi_round) %>%
+  summarise(
+    total_energy = sum(energy, na.rm = TRUE),
+    carb_energy = sum(carb * 4, na.rm = TRUE),
+    fat_energy = sum(totalfat * 9, na.rm = TRUE),
+    protein_energy = sum(totalpro * 4, na.rm = TRUE),
+    fiber_energy = sum(fiber * 2, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    carb_pct = carb_energy / total_energy * 100,
+    fat_pct = fat_energy / total_energy * 100,
+    protein_pct = protein_energy / total_energy * 100,
+    fiber_pct = fiber_energy / total_energy * 100
+  ) %>%
+  select(bmi_round, carb_pct, fat_pct, protein_pct, fiber_pct) %>%
+  pivot_longer(
+    cols = c(carb_pct, fat_pct, protein_pct, fiber_pct),
+    names_to = "macronutrient",
+    values_to = "percent_kcal"
+  ) %>%
+  mutate(macronutrient = factor(macronutrient,
+                                levels = c("fiber_pct", "protein_pct", "fat_pct", "carb_pct"),
+                                labels = c("Fiber", "Protein", "Fat", "Carbohydrate"))) %>%
+  group_by(bmi_round, macronutrient) %>%
+  summarise(avg_percent = mean(percent_kcal, na.rm = TRUE), .groups = "drop") %>%
+  arrange(bmi_round, macronutrient) %>%
+  group_by(bmi_round) %>%
+  mutate(
+    cum_percent = cumsum(avg_percent),
+    lower_bound = lag(cum_percent, default = 0)
+  ) %>%
+  ungroup()
+
+# Plot
+p <- ggplot(bmi_macros, aes(x = bmi_round, y = avg_percent, fill = macronutrient)) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(breaks = seq(12, 40, by = 2)) +
+  labs(
+    title = "Macronutrient Energy Contribution Across BMI Range",
+    subtitle = "Stacked bars show average percent of energy from fiber, protein, fat, and carbohydrates (BMI 12–40)",
+    x = "BMI",
+    y = "Percent of Total Energy (%)",
+    fill = "Macronutrient",
+    caption = "Source: Global Dietary Database (https://globaldietarydatabase.org/management/microdata-surveys/653)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Add horizontal lines at each macronutrient boundary
+for (nutrient in levels(bmi_macros$macronutrient)) {
+  line_data <- bmi_macros %>%
+    filter(macronutrient == nutrient) %>%
+    select(bmi_round, lower_bound)
+  
+  p <- p + geom_line(
+    data = line_data,
+    aes(x = bmi_round, y = lower_bound),
+    inherit.aes = FALSE,
+    color = "black",
+    size = 0.6
+  )
+}
+
+# Add top boundary line at 100%
+p <- p + geom_line(
+  data = tibble(bmi_round = unique(bmi_macros$bmi_round), y = 100),
+  aes(x = bmi_round, y = y),
+  inherit.aes = FALSE,
+  color = "black",
+  size = 0.6
+)
+
+# Display plot
+p
+
+
+```
 
 How do dietary patterns influence health and disease? Using data from NNMB survey collected from 2009 - 2012 for nutritional status of rural population,  we seek to examine the relationship between diet and prelevance of lifestyle diseases among adults. Diet patterns impact health and can pay a major role in life-style diseases like blood-pressue, diabetes and obesity. 
 
-## Will add graphic here 
+ 
