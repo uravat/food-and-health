@@ -69,12 +69,12 @@ p <- ggplot(bmi_macros, aes(x = bmi_round, y = avg_percent, fill = macronutrient
   geom_bar(stat = "identity") +
   scale_x_continuous(breaks = seq(12, 40, by = 2)) +
   labs(
-    title = "Macronutrient Energy Contribution Across BMI Range",
-    subtitle = "Stacked bars show average percent of energy from fiber, protein, fat, and carbohydrates (BMI 12–40)",
+    title = "Breakdown of macronutrients by BMI",
+    subtitle = "Higher BMI individuals have higher carb, high fat diets",
     x = "BMI",
-    y = "Percent of Total Energy (%)",
+    y = "Percent of Calories",
     fill = "Macronutrient",
-    caption = "Source: Global Dietary Database (https://globaldietarydatabase.org/management/microdata-surveys/653)"
+    caption = "Source: Diet and nutritional status from 2011 [Global Dietary Database](https://globaldietarydatabase.org/management/microdata-surveys/653)"
   ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
