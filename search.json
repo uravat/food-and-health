@@ -4,13 +4,76 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "This project came about due to my interest in data science and food and health.\nHow do dietary patterns influence health and disease? Curious? Check it out here Email me if interested uma.ravat.ucsb@gmail.com\nI have created this project website as a part of Kane’s Data Science Bootcamp."
+    "text": "This project came about due to my interest in data science and food and health.\nHow do dietary patterns influence health and disease? Curious? Check here to see my explorations into What can dietary patterns tells us? Email me if interested uma.ravat.ucsb@gmail.com\nI have created this project website as a part of Kane’s Data Science Bootcamp."
+  },
+  {
+    "objectID": "Sources.html",
+    "href": "Sources.html",
+    "title": "Sources",
+    "section": "",
+    "text": "NNMB data: Diet and nutritional status of rural population, prevalence of hypertension and diabetes among adults, and infant and young child feeding practices (NNMB Rural Survey), 2009-2012\nNFHS data: National Family Health Survey 2015-2016"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Food and Health",
     "section": "",
-    "text": "How do dietary patterns influence health and disease? Using data from NNMB survey collected from 2009 - 2012 for nutritional status of rural population, we seek to examine the relationship between diet and prelevance of lifestyle diseases among adults. Diet patterns impact health and can pay a major role in life-style diseases like blood-pressue, diabetes and obesity."
+    "text": "What can dietary patterns tells us? \nUsing data from the NNMB (National Nutrition Monitoring Bureau) survey (2009–2012) on rural nutritional status, we examine the relationship between food composition(what people eat) and BMI (Body Mass Index). Since BMI is a known marker for lifestyle diseases such as hypertension, diabetes, and obesity, this analysis explores how dietary patterns relate to these health risks."
+  },
+  {
+    "objectID": "More.html#daily-energy-intake-distribution-per-person",
+    "href": "More.html#daily-energy-intake-distribution-per-person",
+    "title": "More",
+    "section": "Daily energy intake distribution per person",
+    "text": "Daily energy intake distribution per person"
+  },
+  {
+    "objectID": "More.html#energy-intake-by-age-group-and-sex",
+    "href": "More.html#energy-intake-by-age-group-and-sex",
+    "title": "More",
+    "section": "Energy Intake by Age Group and Sex",
+    "text": "Energy Intake by Age Group and Sex"
+  },
+  {
+    "objectID": "More.html#energy-intake-by-bmi",
+    "href": "More.html#energy-intake-by-bmi",
+    "title": "More",
+    "section": "Energy intake by BMI",
+    "text": "Energy intake by BMI"
+  },
+  {
+    "objectID": "More.html#top-15-food-items-by-energy-contribution",
+    "href": "More.html#top-15-food-items-by-energy-contribution",
+    "title": "More",
+    "section": "Top 15 food items by Energy contribution",
+    "text": "Top 15 food items by Energy contribution"
+  },
+  {
+    "objectID": "More.html#top-20-dietary-sources-of-proteintotal",
+    "href": "More.html#top-20-dietary-sources-of-proteintotal",
+    "title": "More",
+    "section": "Top 20 Dietary Sources of Protein(Total)",
+    "text": "Top 20 Dietary Sources of Protein(Total)"
+  },
+  {
+    "objectID": "More.html#mean-daily-kilocalories-across-the-age-span-for-men-and-women.",
+    "href": "More.html#mean-daily-kilocalories-across-the-age-span-for-men-and-women.",
+    "title": "More",
+    "section": "Mean daily kilocalories across the age span for men and women.",
+    "text": "Mean daily kilocalories across the age span for men and women."
+  },
+  {
+    "objectID": "More.html#macronutrient-intake-by-bmi-category",
+    "href": "More.html#macronutrient-intake-by-bmi-category",
+    "title": "More",
+    "section": "Macronutrient Intake by BMI Category",
+    "text": "Macronutrient Intake by BMI Category"
+  },
+  {
+    "objectID": "More.html#micronutrient-calcium-iron-zinc-intake-by-sex",
+    "href": "More.html#micronutrient-calcium-iron-zinc-intake-by-sex",
+    "title": "More",
+    "section": "Micronutrient (Calcium, Iron, Zinc) Intake by Sex",
+    "text": "Micronutrient (Calcium, Iron, Zinc) Intake by Sex"
   }
 ]
