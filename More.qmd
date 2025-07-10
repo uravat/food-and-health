@@ -1,0 +1,276 @@
+---
+title: "More"
+format: html
+execute:
+  message: false
+  warning: false
+  echo: false
+  cache: true
+---
+
+```{r}
+# ── 1.  PACKAGES ────────────────────────────────────────────────────────────────
+library(tidyverse)  # loads readr, dplyr, tidyr, ggplot2, etc.
+
+# ── 2.  LOAD  &  GLIMPSE ───────────────────────────────────────────────────────
+# Adjust the path to where you saved the file
+diet_raw <- read_csv("./data/DietData.csv",
+                     show_col_types = FALSE)   # suppress long column message
+
+#glimpse(diet_raw, width = 80)   # quick peek
+```
+
+##  Macronutrient mix by sex 
+
+
+```{r}
+# ── Load & keep only nutrients we need ──────────────────────────────────────────
+#library(tidyverse)
+
+diet <- read_csv("./data/DietData.csv",
+                 show_col_types = FALSE) |>
+  select(id, sex, energy, totalpro, carb, totalfat) |>
+  mutate(across(c(energy, totalpro, carb, totalfat), as.numeric))
+
+# ── Aggregate calories & macros by sex ─────────────────────────────────────────
+by_sex <- diet |>
+  group_by(sex) |>
+  summarise(across(c(energy, totalpro, carb, totalfat), sum, na.rm = TRUE),
+            .groups = "drop") |>
+  mutate(pro_kcal = totalpro * 4,                    # kcal factors
+         carb_kcal = carb * 4,
+         fat_kcal  = totalfat * 9) |>
+  mutate(across(ends_with("_kcal"),
+                ~ .x / energy * 100, .names = "pct_{col}")) |>
+  select(sex, starts_with("pct_")) |>
+  pivot_longer(-sex, names_to = "macro", values_to = "pct") |>
+  mutate(macro = recode(macro,
+                        pct_pro_kcal  = "Protein",
+                        pct_carb_kcal = "Carbohydrate",
+                        pct_fat_kcal  = "Fat"))
+
+# ── Plot ───────────────────────────────────────────────────────────────────────
+ggplot(by_sex,
+       aes(x = macro, y = pct, fill = macro)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ sex, labeller = labeller(sex = c(`1` = "Men", `2` = "Women"))) +
+  labs(title    = "Macronutrient Energy Share by Sex (NNMB 2010‑11)",
+       subtitle = "Carbohydrates dominate in both sexes; fat contributes ~25‑30 % of calories,\nwhile protein remains the smallest share.",
+       x = NULL, y = "Share of total energy (%)",
+       caption  = "Source: NNMB 2010‑11 Diet Micro‑data • globaldietarydatabase.org") +
+  scale_fill_brewer(type = "qual", palette = "Set2") +
+  theme_minimal(base_size = 12)
+
+```
+
+## Daily energy intake distribution per person
+```{r}
+#library(tidyverse)
+
+diet <- read_csv("./data/DietData.csv",
+                 show_col_types = FALSE) |>
+  select(id, recall_n, energy) |>
+  mutate(energy = as.numeric(energy))
+
+daily_kcal <- diet |>
+  group_by(id, recall_n) |>
+  summarise(kcal = sum(energy, na.rm = TRUE), .groups = "drop")
+
+ggplot(daily_kcal, aes(x = kcal)) +
+  geom_density(fill = "steelblue", alpha = 0.4) +
+  geom_vline(xintercept = median(daily_kcal$kcal, na.rm = TRUE),
+             linetype = "dashed", colour = "red") +
+  labs(title    = "Distribution of Daily Energy Intake (per 24 h recall)",
+       subtitle = "Most individuals report between ~1500 and 3000 kcal; median shown in red.",
+       x = "Kilocalories per person‑day", y = "Density",
+       caption  = "Source: NNMB 2010‑11 Diet Micro‑data • globaldietarydatabase.org") +
+  theme_minimal(base_size = 12)
+
+```
+
+## Energy Intake by Age Group and Sex
+
+```{r}
+# Load data
+diet <- read_csv("./data/DietData.csv")
+participants <- read_csv("./data/ParticipantData.csv")
+
+# Join datasets on 'id'
+full_data <- left_join(diet, participants, by = "id")
+
+full_data %>%
+  mutate(age_group = cut(age.x, breaks = seq(0, 80, by = 10), right = FALSE)) %>%
+  group_by(age_group, sex.x) %>%
+  summarise(avg_energy = mean(energy, na.rm = TRUE), .groups = "drop") %>%
+  drop_na() %>%
+  ggplot(aes(x = age_group, y = avg_energy, fill = as.factor(sex.x))) +
+  geom_col(position = "dodge") +
+  labs(title = "Average Energy Intake by Age Group and Sex", x = "Age Group", y = "Energy Intake (kcal)", fill = "Sex") +
+  theme_minimal()
+
+```
+
+## Energy intake by BMI
+```{r}
+# Load data
+diet <- read_csv("./data/DietData.csv")
+participants <- read_csv("./data/ParticipantData.csv")
+
+# Join datasets on 'id'
+full_data <- left_join(diet, participants, by = "id")
+
+
+# Summarize total energy per participant
+energy_bmi <- full_data %>%
+  group_by(id, bmi_cat) %>%
+  summarise(total_energy = sum(energy, na.rm = TRUE)) %>%
+  ungroup()
+
+# Plot
+ggplot(energy_bmi, aes(x = as.factor(bmi_cat), y = total_energy)) +
+  geom_boxplot(fill = "skyblue") +
+  labs(title = "Total Energy Intake by BMI Category",
+       x = "BMI Category", y = "Total Energy (kcal)") +
+  theme_minimal()
+
+```
+
+
+## Top 15 food items by Energy contribution
+
+```{r}
+# ── 3.  BASIC CLEAN‑UP  (optional but handy) ────────────────────────────────────
+# a) keep only the columns we need for this plot
+diet <- diet_raw %>% 
+  select(id, sex, age,
+         ingr_descr_eng,         # English ingredient description
+         energy)                 # energy per record (kcal)
+
+# b) make sure 'energy' is numeric
+diet <- diet %>% 
+  mutate(energy = as.numeric(energy))
+
+# ── 4.  AGGREGATE: total kcal by food ──────────────────────────────────────────
+top_energy <- diet %>% 
+  group_by(ingr_descr_eng) %>% 
+  summarise(total_kcal = sum(energy, na.rm = TRUE)) %>% 
+  arrange(desc(total_kcal)) %>% 
+  slice_head(n = 15)            # keep the Top‑15 foods
+
+# ── 5.  VISUALISE ──────────────────────────────────────────────────────────────
+ggplot(top_energy,
+       aes(x = reorder(ingr_descr_eng, total_kcal),
+           y = total_kcal)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(title = "NNMB 2010–11 (India) — Top 15 Food Items by Energy Contribution",
+       x = NULL,
+       y = "Total kilocalories in survey period") +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.y = element_blank())
+
+```
+
+## Top 20 Dietary Sources of Protein(Total)
+
+```{r}
+diet_raw <- read_csv("./data/DietData.csv", show_col_types = FALSE)
+
+
+diet <- diet_raw |>
+  rename_with(~ gsub("\\s+", "", tolower(.x))) |>
+  mutate(totalpro = as.numeric(totalpro))
+
+top_total <- diet |>
+  group_by(ingr_descr_eng) |>
+  summarise(total_protein = sum(totalpro, na.rm = TRUE), .groups = "drop") |>
+  arrange(desc(total_protein)) |>
+  slice_head(n = 20)
+
+ggplot(top_total,
+       aes(x = reorder(ingr_descr_eng, total_protein),
+           y = total_protein)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(title    = "Top 20 Dietary Sources of Protein (Total)",
+       subtitle = "Using total protein since plant/animal split not available.",
+       x = NULL, y = "Protein (g) across all recalls",
+       caption  = "Source: NNMB 2010‑11 Diet Micro‑data • globaldietarydatabase.org") +
+  theme_minimal(base_size = 11)
+
+```
+
+## Mean daily kilocalories across the age span for men and women.
+```{r}
+#library(tidyverse)
+
+diet <- read_csv("./data/DietData.csv", show_col_types = FALSE) |>
+  select(id, sex, age, recall_n, energy) |>
+  mutate(energy = as.numeric(energy))
+
+daily_kcal <- diet |>
+  group_by(id, recall_n, sex, age) |>
+  summarise(kcal = sum(energy, na.rm = TRUE), .groups = "drop")
+
+ggplot(daily_kcal, aes(age, kcal, colour = as.factor(sex))) +
+  geom_point(alpha = 0.15, size = 0.7) +
+  geom_smooth(method = "loess", se = FALSE, linewidth = 1) +
+  scale_colour_manual(values = c(`1` = "#1f78b4", `2` = "#e31a1c"),
+                      labels = c(`1` = "Men", `2` = "Women")) +
+  labs(title    = "Daily Energy Intake Across the Life‑course",
+       subtitle = "LOESS curves suggest energy intake peaks in early adulthood\nand declines steadily after ~50 y for both sexes.",
+       x = "Age (years)", y = "Kilocalories per 24 h recall",
+       colour  = NULL,
+       caption = "Source: NNMB 2010‑11 Diet Micro‑data • globaldietarydatabase.org") +
+  theme_minimal(base_size = 12)
+
+```
+## Macronutrient Intake by BMI Category
+
+```{r}
+# Load data
+diet <- read_csv("./data/DietData.csv")
+participants <- read_csv("./data/ParticipantData.csv")
+
+# Join datasets on 'id'
+full_data <- left_join(diet, participants, by = "id")
+
+macros_bmi <- full_data %>%
+  group_by(id, bmi_cat) %>%
+  summarise(
+    total_protein = sum(totalpro, na.rm = TRUE),
+    total_fat = sum(totalfat, na.rm = TRUE),
+    total_carb = sum(carb, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = starts_with("total_"), names_to = "macronutrient", values_to = "amount")
+
+ggplot(macros_bmi, aes(x = as.factor(bmi_cat), y = amount, fill = macronutrient)) +
+  geom_boxplot() +
+  labs(title = "Macronutrient Intake by BMI Category",
+       x = "BMI Category", y = "Amount (g)", fill = "Macronutrient") +
+  theme_minimal()
+
+```
+
+## Micronutrient (Calcium, Iron, Zinc) Intake by Sex
+
+
+```{r}
+micros_sex <- full_data %>%
+  group_by(id, sex.x) %>%
+  summarise(
+    calcium = sum(ca, na.rm = TRUE),
+    iron = sum(fe, na.rm = TRUE),
+    zinc = sum(zn, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = c(calcium, iron, zinc), names_to = "micronutrient", values_to = "amount")
+
+ggplot(micros_sex, aes(x = as.factor(sex.x), y = amount, fill = micronutrient)) +
+  geom_boxplot() +
+  labs(title = "Micronutrient Intake by Sex",
+       x = "Sex", y = "Amount (mg)", fill = "Micronutrient") +
+  theme_minimal()
+
+```

@@ -2,7 +2,6 @@
 
 View this project [here](https://uravat.github.io/food-and-health/)
 
-# How do dietary patterns influence health and disease? 
+# What can dietary patterns tells us? 
 
-Using data from NNMB survey collected from 2009 - 2012 for nutritional status of rural population,  we seek to examine the relationship between diet and prelevance of lifestyle diseases among adults. Diet patterns impacts health and can pay a major role in life-style diseases like blood-pressue, diabetes and obesity. 
-
+Using data from the NNMB (National Nutrition Monitoring Bureau) survey (2009–2012) on rural nutritional status, we examine the relationship between food composition and BMI (Body Mass Index). Since BMI is a known marker for lifestyle diseases such as hypertension, diabetes, and obesity, this analysis explores how dietary patterns relate to these health risks.

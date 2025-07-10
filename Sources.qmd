@@ -1,0 +1,15 @@
+---
+title: "Sources"
+format: html
+execute:
+  message: false
+  warning: false
+  echo: false
+  cache: true
+---
+
+1. [**NNMB data:**](https://globaldietarydatabase.org/management/microdata-surveys/653) Diet and nutritional status of rural population, prevalence of hypertension and diabetes among adults, and infant and young child feeding practices (NNMB Rural Survey), 2009-2012 
+2. [**NFHS data:**](https://microdata.worldbank.org/index.php/catalog/2949) National Family Health Survey 2015-2016
+
+
+
